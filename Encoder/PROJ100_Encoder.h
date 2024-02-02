@@ -7,8 +7,8 @@ class PROJ100_Encoder{
 
     #define ENC_LEFT                0
     #define ENC_RIGHT               1
-    #define OUTPUT_FROM_INTERRUPT   0
-    #define OUTPUT_FROM_THREAD      1
+    #define OUTPUT_RAW              0
+    #define OUTPUT_DEBOUNCED        1
     
     private:
         
@@ -36,10 +36,11 @@ class PROJ100_Encoder{
         void timingUpdateThreadFunc();
         void setLastPulseTimeUs(uint32_t time);
         void encoderISR();
-        ~PROJ100_Encoder();
+
 
     public:
         PROJ100_Encoder(PinName Output_Pin, uint16_t pulses_per_rotation = 20);
+        ~PROJ100_Encoder();
         bool setDebounceTimeUs(uint32_t new_us);
         uint32_t getDebounceTimeUs();
         int32_t getLastPulseTimeUs();
@@ -47,9 +48,9 @@ class PROJ100_Encoder{
         bool isStationary();
         bool waitForPulse(uint32_t timeout_ms= osWaitForever);
         uint16_t getPulsesPerRotation();
-        void setOutputPin(PinName pin, uint8_t pos=OUTPUT_FROM_INTERRUPT);
+        void setOutputPin(PinName pin, uint8_t pos=OUTPUT_DEBOUNCED);
         void removeOutputPin();
-        void setOutputInterruptOrThread(uint8_t pos);
+        void setOutputRaworDebounced(uint8_t pos);
         void start();
         void stop();
         void reset();

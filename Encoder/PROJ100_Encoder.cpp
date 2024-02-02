@@ -34,7 +34,7 @@ void PROJ100_Encoder::setLastPulseTimeUs(uint32_t time){
 */
 void PROJ100_Encoder::PROJ100_Encoder::encoderISR(){
     // if we've set a monitoring output pin to toggle from the interrupt, change its state
-    if(out_pin && out_interrupt_or_thread ==OUTPUT_FROM_INTERRUPT){
+    if(out_pin && out_interrupt_or_thread ==OUTPUT_DEBOUNCED){
         out_pin->write(!out_pin->read());
     }
     // Read the timer then reset it
@@ -48,7 +48,6 @@ void PROJ100_Encoder::PROJ100_Encoder::encoderISR(){
         timing_mail.put(p);
     }
 }
-
 
 
 uint16_t PROJ100_Encoder::getPulsesPerRotation(){
@@ -78,7 +77,7 @@ void PROJ100_Encoder::timingUpdateThreadFunc(){
                    // Set stationary detector to false (wheel is not stationary)
                    setIsStationary(false);
                     // if we've set a monitoring output pin to toggle from the thread, change its state
-                    if(out_pin && out_interrupt_or_thread ==OUTPUT_FROM_THREAD){
+                    if(out_pin && out_interrupt_or_thread ==OUTPUT_DEBOUNCED){
                         out_pin->write(!out_pin->read());
                     }   
                 }
@@ -175,11 +174,11 @@ uint32_t PROJ100_Encoder::getDebounceTimeUs(){
 */
 int32_t PROJ100_Encoder::getLastPulseTimeUs(){
     int32_t rval=-1;
-    if(lock.try_acquire_for(10ms)){
+    if(lock.try_acquire_for(30ms)){
         if(_is_stationary){
             rval = -2;
         }
-        if(!_new_timing_data_available){
+        else if(!_new_timing_data_available){
             rval = 0;
         }
         else{
@@ -269,7 +268,7 @@ void PROJ100_Encoder::setOutputPin(PinName pin, uint8_t pos){
         delete out_pin;
     }
     out_pin = new DigitalOut(pin);
-    setOutputInterruptOrThread(pos);
+    setOutputRaworDebounced(pos);
 }
 
 /*
@@ -287,8 +286,8 @@ void PROJ100_Encoder::removeOutputPin(){
     Public member function for setting whether the output pulse is at the time of interrupt
     or during the thread after debounce. Values other than 0(OUTPUT_FROM_INTERRUPT) or 1(OUTPUT_FROM_THREAD) are ignoreed
 */
-void PROJ100_Encoder::setOutputInterruptOrThread(uint8_t pos){
-    if(pos==OUTPUT_FROM_INTERRUPT || pos==OUTPUT_FROM_THREAD){
+void PROJ100_Encoder::setOutputRaworDebounced(uint8_t pos){
+    if(pos==OUTPUT_RAW || pos==OUTPUT_DEBOUNCED){
         out_interrupt_or_thread = pos;
     }
 }
