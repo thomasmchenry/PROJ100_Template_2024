@@ -79,3 +79,28 @@ void twinkle(int s){
     Tune(buzzer,1e6/C4,s*4);
     buzzer.period_ms(TIME_PERIOD);
   }
+
+void BATMAN(int s){
+    Tune(buzzer,1e6/B4,s*1);
+    Tune(buzzer,1e6/B4,s*1);
+    Tune(buzzer,1e6/B4,s*1);
+    Tune(buzzer,1e6/B4,s*1);
+
+    Tune(buzzer,1e6/A4,s*1);
+    Tune(buzzer,1e6/A4,s*1);
+    Tune(buzzer,1e6/A4,s*1);
+    Tune(buzzer,1e6/A4,s*1);
+
+    Tune(buzzer,1e6/B4,s*1);
+    Tune(buzzer,1e6/B4,s*1);
+    Tune(buzzer,1e6/B4,s*1);
+    Tune(buzzer,1e6/B4,s*1);
+
+    Tune(buzzer,1e6/A4,s*1);
+    Tune(buzzer,1e6/A4,s*1);
+    Tune(buzzer,1e6/A4,s*1);
+    Tune(buzzer,1e6/A4,s*1);
+
+    Tune(buzzer,1e6/G4,s*1);
+    Tune(buzzer,1e6/F4,s*3);
+ }
